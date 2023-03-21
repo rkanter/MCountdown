@@ -6,19 +6,23 @@
     <!-- https://stackoverflow.com/a/65495019 with modifications -->
     <script>
     window.onload = function display(){
-        var springBreakDays = countDown(new Date("April 8 2023"));
+        var springBreakDays = countDown(new Date("April 7 2023"));
         document.getElementById("springBreakDays").innerHTML = "Days: " + springBreakDays;
         document.getElementById("springBreakWeeks").innerHTML = "Weeks: " + Math.ceil(springBreakDays / 5);
 
-        var lastDayDays = countDown(new Date("June 10 2023"));
+        var lastDayDays = countDown(new Date("June 9 2023"));
         document.getElementById("lastDayDays").innerHTML = "Days: " + lastDayDays;
         document.getElementById("lastDayWeeks").innerHTML = "Weeks: " + Math.ceil(lastDayDays / 5);
     }
     function countDown(endDate) {
         const startDate = new Date();
         var numDays = 0;
+
+        // Assume the day ends at 4PM
+        endDate.setHours(14, 0, 0, 0);
+
+        // Count days, skipping weekends
         for (var currentDate = new Date(startDate); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
-          // Skip weekends
           if (currentDate.getDay() != 0 && currentDate.getDay() != 6) {
             numDays++;
           }
