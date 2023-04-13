@@ -6,10 +6,6 @@
     <!-- https://stackoverflow.com/a/65495019 with modifications -->
     <script>
     window.onload = function display(){
-        var springBreakDays = countDown(new Date("April 7 2023"));
-        document.getElementById("springBreakDays").innerHTML = "Days: " + springBreakDays;
-        document.getElementById("springBreakWeeks").innerHTML = "Weeks: " + Math.ceil(springBreakDays / 5);
-
         var lastDayDays = countDown(new Date("June 9 2023"));
         document.getElementById("lastDayDays").innerHTML = "Days: " + lastDayDays;
         document.getElementById("lastDayWeeks").innerHTML = "Weeks: " + Math.ceil(lastDayDays / 5);
@@ -47,9 +43,6 @@
     </script>
 </head>
 <body>
-<h1>Spring Break</h1>
-<p id="springBreakDays"></p>
-<p id="springBreakWeeks"></p>
 <h1>Last Day</h1>
 <p id="lastDayDays"></p>
 <p id="lastDayWeeks"></p>
