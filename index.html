@@ -6,14 +6,9 @@
     <!-- https://stackoverflow.com/a/65495019 with modifications -->
     <script>
     window.onload = function display(){
-        var lastDayDays = countDownWork(new Date("June 9 2023"));
-        document.getElementById("lastDayDays").innerHTML = "Days: " + lastDayDays;
-        document.getElementById("lastDayWeeks").innerHTML = "Weeks: " + Math.ceil(lastDayDays / 5);
-
         var moveInDayDays = countDown(new Date("June 15 2023"));
         document.getElementById("moveInDayDays").innerHTML = "Days: " + moveInDayDays;
         document.getElementById("moveInDayWeeks").innerHTML = "Weeks: " + Math.ceil(moveInDayDays / 7);
-
     }
 
     function countDown(endDate) {
@@ -65,9 +60,6 @@
     </script>
 </head>
 <body>
-<h1>Last Day of Work</h1>
-<p id="lastDayDays"></p>
-<p id="lastDayWeeks"></p>
 <h1>Move-In Day</h1>
 <p id="moveInDayDays"></p>
 <p id="moveInDayWeeks"></p>
