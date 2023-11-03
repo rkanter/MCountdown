@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>M Countdown</title>
+    <!-- Icon from https://icons8.com/icon/15693/stopwatch -->
+    <link rel="icon" type="image/x-icon" href="icons8-stopwatch-96.png">
+    <script src="papaparse.min.js"></script>
+    <script>
+
+    window.onload = function onLoad() {
+        var url = getUrl();
+        if (url) {
+            fetchAndParse(url);
+        } else {
+            showUrlForm();
+        }
+    }
+
+    function getUrl() {
+        var params = (new URL(document.location)).searchParams;
+        source = params.get('source');
+        if (source) {
+            <!-- Google Spreadsheets does have a way to get csv files, but to make things easier for the user, we -->
+            <!-- can massage the URL for them, so they can simply copy-paste -->
+            if (source.startsWith('https://docs.google.com/spreadsheets/d/') && !source.endsWith('&output=csv')) {
+                source = 'https://docs.google.com/spreadsheet/ccc?key=' + source.split('/')[5] + '&output=csv';
+            }
+            return source
+        }
+        return ""
+    }
+
+    function showUrlForm() {
+        document.getElementById("urlForm").style.display = "block"
+        document.getElementById("clearForm").style.display = "none"
+    }
+
+    function hideUrlForm() {
+        document.getElementById("urlForm").style.display = "none"
+        document.getElementById("clearForm").style.display = "block"
+    }
+
+    function showErrorText(err) {
+        errorTextElement = document.getElementById("errorText");
+        errorTextElement.textContent = err;
+        errorTextElement.style.display = "block"
+    }
+
+    function hideErrorText() {
+        errorTextElement = document.getElementById("errorText");
+        errorTextElement.textContent = "";
+        errorTextElement.style.display = "none"
+    }
+
+    function fetchAndParse(url){
+        Papa.parse(url, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            transformHeader:function(h) {
+                return h.trim().toLowerCase()
+            },
+            complete: function(results) {
+                parse(results.data);
+            },
+            error: function(err)
+            {
+                console.log(err);
+                showErrorText(err);
+                showUrlForm();
+            },
+        })
+    }
+
+    function parse(data) {
+        for (item of data) {
+            var title = item['title']
+            var excludeWeekends = ((item['skip weekends'] || 'false').toLowerCase() === 'true')
+            var skipDays = getSkipDays(item)
+            var days = countDown(new Date(item['date']), excludeWeekends, skipDays)
+            var weekSize = excludeWeekends ? 6 : 7
+            var weeks = Math.ceil(days / weekSize)
+
+            var div = document.getElementById("countdowns");
+            var h = document.createElement("H1");
+            h.appendChild(document.createTextNode(title));
+            div.appendChild(h);
+            var p1 = document.createElement("p");
+            p1.appendChild(document.createTextNode("Days: " + days));
+            div.appendChild(p1);
+            var p2 = document.createElement("p");
+            p2.appendChild(document.createTextNode("Weeks: " + weeks));
+            div.appendChild(p2);
+        }
+        hideErrorText();
+        hideUrlForm();
+    }
+
+    function countDown(endDate, excludeWeekends, skipDays) {
+        const startDate = new Date();
+        var numDays = 0;
+
+        // Count days
+        for (var currentDate = new Date(startDate); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
+          if (!excludeWeekends || currentDate.getDay() != 0 && currentDate.getDay() != 6) {
+            numDays++;
+          }
+        }
+
+        // Skip days off (by simply checking if they are between startDate and endDate)
+        for (skipDay of skipDays) {
+            if (startDate < skipDay && skipDay < endDate) {
+                numDays--;
+            }
+        }
+
+        return numDays;
+    }
+
+    function getSkipDays(item) {
+        const skipDays = []
+        var i = 0
+        // The first "duplicate" column doesn't have a suffix added to it
+        var skipDate = item['skip date']
+        while (skipDate !== undefined && skipDate !== '') {
+            skipDays.push(new Date(skipDate))
+            i++
+            skipDate = item['skip date_' + i]
+        }
+        return skipDays
+    }
+
+    function doExample() {
+        sourceElement = document.getElementById("source");
+        sourceElement.value = "https://docs.google.com/spreadsheets/d/1WiAqdmNUpdFK9TNP__R8MHtbhNRjhG67PAY-nQC7roo/edit?pli=1#gid=0";
+        urlFormElement = document.getElementById("urlForm");
+        urlFormElement.submit();
+    }
+
+    function doClear() {
+        location.href = document.location.toString().split("?")[0]
+    }
+    </script>
+</head>
+
+<body>
+<div id="errorText" style="display: none; color:red"></div>
+<form id="urlForm" style="display: none;">
+    <a href="../" target="_blank">README</a>
+    </br></br>
+    <label for="source">URL:</label>
+    <input type="text" id="source" name="source" value="" style="width:70%" placeholder="Enter URL of a correctly formatted CSV or Google Spreadsheet here...">
+    </br>
+    <input type="submit" value="Submit">
+    </br></br>
+    <input type="button" value="Load Example" onclick="doExample()">
+    <a href="https://docs.google.com/spreadsheets/d/1WiAqdmNUpdFK9TNP__R8MHtbhNRjhG67PAY-nQC7roo/edit?pli=1#gid=0" target="_blank">See Example</a>
+</form>
+<div id="countdowns"></div>
+<form id="clearForm" style="display: none;">
+    <hr>
+    <input type="button" value="Clear" onclick="doClear()">
+</form>
+</body>
+</html>
