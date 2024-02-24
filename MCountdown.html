@@ -79,7 +79,7 @@
             var excludeWeekends = ((item['skip weekends'] || 'false').toLowerCase() === 'true')
             var skipDays = getSkipDays(item)
             var days = countDown(new Date(item['date']), excludeWeekends, skipDays)
-            var weekSize = excludeWeekends ? 6 : 7
+            var weekSize = excludeWeekends ? 5 : 7
             var weeks = Math.ceil(days / weekSize)
 
             var div = document.getElementById("countdowns");
