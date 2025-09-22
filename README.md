@@ -20,7 +20,7 @@ The CSV or Google Spreadsheet must have at least the following format, with any 
 |-----------|-----------------|
 | \<TITLE\> | \<TARGET_DATE\> |
 | ...       | ...             |
-The `<TITLE>` is the name you want to display as that countdown's title.  
+The `<TITLE>` is the name you want to display as that countdown's title, and can include emoji.  
 The `<TARGET_DATE>` can be any date (and time) you want for the countdown.
 
 You can optionally add a "Skip Weekends" column to skip Saturdays and Sundays (default is `FALSE`):
@@ -29,6 +29,7 @@ You can optionally add a "Skip Weekends" column to skip Saturdays and Sundays (d
 |-----------|-----------------|---------------|
 | \<TITLE\> | \<TARGET_DATE\> | TRUE \| FALSE |
 | ...       | ...             | ...           |
+Any value that is not one of `TRUE`, `YES,` or `Y` (case-insensitive) is considered to be `FALSE`.
 
 You can optionally add _any number_ of "Skip Date" columns to skip those specific dates:
 

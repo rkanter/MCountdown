@@ -76,7 +76,8 @@
     function parse(data) {
         for (item of data) {
             var title = item['title']
-            var excludeWeekends = ((item['skip weekends'] || 'false').toLowerCase() === 'true')
+            var excludeWeekendsRaw = (item['skip weekends'] || 'false').toLowerCase();
+            var excludeWeekends = (excludeWeekendsRaw === 'true' || excludeWeekendsRaw === 'yes' || excludeWeekendsRaw === 'y')
             var skipDays = getSkipDays(item)
             var days = countDown(new Date(item['date']), excludeWeekends, skipDays)
             var weekSize = excludeWeekends ? 5 : 7
