@@ -9,7 +9,7 @@
     <script>
 
     window.onload = function onLoad() {
-        var url = getUrl();
+        const url = getUrl();
         if (url) {
             fetchAndParse(url);
         } else {
@@ -18,8 +18,8 @@
     }
 
     function getUrl() {
-        var params = (new URL(document.location)).searchParams;
-        source = params.get('source');
+        const params = (new URL(document.location)).searchParams;
+        let source = params.get('source');
         if (source) {
             <!-- Google Spreadsheets does have a way to get csv files, but to make things easier for the user, we -->
             <!-- can massage the URL for them, so they can simply copy-paste -->
@@ -42,13 +42,13 @@
     }
 
     function showErrorText(err) {
-        errorTextElement = document.getElementById("errorText");
+        const errorTextElement = document.getElementById("errorText");
         errorTextElement.textContent = err;
         errorTextElement.style.display = "block"
     }
 
     function hideErrorText() {
-        errorTextElement = document.getElementById("errorText");
+        const errorTextElement = document.getElementById("errorText");
         errorTextElement.textContent = "";
         errorTextElement.style.display = "none"
     }
@@ -74,23 +74,24 @@
     }
 
     function parse(data) {
+        let item;
         for (item of data) {
-            var title = item['title']
-            var excludeWeekendsRaw = (item['skip weekends'] || 'false').toLowerCase();
-            var excludeWeekends = (excludeWeekendsRaw === 'true' || excludeWeekendsRaw === 'yes' || excludeWeekendsRaw === 'y')
-            var skipDays = getSkipDays(item)
-            var days = countDown(new Date(item['date']), excludeWeekends, skipDays)
-            var weekSize = excludeWeekends ? 5 : 7
-            var weeks = Math.ceil(days / weekSize)
+            const title = item['title'];
+            const excludeWeekendsRaw = (item['skip weekends'] || 'false').toLowerCase();
+            const excludeWeekends = (excludeWeekendsRaw === 'true' || excludeWeekendsRaw === 'yes' || excludeWeekendsRaw === 'y');
+            const skipDays = getSkipDays(item);
+            const days = countDown(new Date(item['date']), excludeWeekends, skipDays);
+            const weekSize = excludeWeekends ? 5 : 7;
+            const weeks = Math.ceil(days / weekSize);
 
-            var div = document.getElementById("countdowns");
-            var h = document.createElement("H1");
+            const div = document.getElementById("countdowns");
+            const h = document.createElement("H1");
             h.appendChild(document.createTextNode(title));
             div.appendChild(h);
-            var p1 = document.createElement("p");
+            const p1 = document.createElement("p");
             p1.appendChild(document.createTextNode("Days: " + days));
             div.appendChild(p1);
-            var p2 = document.createElement("p");
+            const p2 = document.createElement("p");
             p2.appendChild(document.createTextNode("Weeks: " + weeks));
             div.appendChild(p2);
         }
@@ -100,16 +101,17 @@
 
     function countDown(endDate, excludeWeekends, skipDays) {
         const startDate = new Date();
-        var numDays = 0;
+        let numDays = 0;
 
         // Count days
-        for (var currentDate = new Date(startDate); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
-          if (!excludeWeekends || currentDate.getDay() != 0 && currentDate.getDay() != 6) {
+        for (let currentDate = new Date(startDate); currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
+          if (!excludeWeekends || currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
             numDays++;
           }
         }
 
         // Skip days off (by simply checking if they are between startDate and endDate)
+        let skipDay;
         for (skipDay of skipDays) {
             if (startDate < skipDay && skipDay < endDate) {
                 numDays--;
@@ -121,9 +123,9 @@
 
     function getSkipDays(item) {
         const skipDays = []
-        var i = 0
+        let i = 0;
         // The first "duplicate" column doesn't have a suffix added to it
-        var skipDate = item['skip date']
+        let skipDate = item['skip date'];
         while (skipDate !== undefined && skipDate !== '') {
             skipDays.push(new Date(skipDate))
             i++
@@ -133,9 +135,9 @@
     }
 
     function doExample() {
-        sourceElement = document.getElementById("source");
+        const sourceElement = document.getElementById("source");
         sourceElement.value = "https://docs.google.com/spreadsheets/d/1WiAqdmNUpdFK9TNP__R8MHtbhNRjhG67PAY-nQC7roo/edit?pli=1#gid=0";
-        urlFormElement = document.getElementById("urlForm");
+        const urlFormElement = document.getElementById("urlForm");
         urlFormElement.submit();
     }
 
